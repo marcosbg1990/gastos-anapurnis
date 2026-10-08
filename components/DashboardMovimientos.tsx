@@ -2,8 +2,10 @@
 
 import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase'
+import { categorias } from '../lib/categorias'
 
 export default function DashboardMovimientos() {
+
   const [mesSeleccionado, setMesSeleccionado] =
     useState(new Date().getMonth() + 1)
 
@@ -15,6 +17,9 @@ export default function DashboardMovimientos() {
 
   const [categoriaSeleccionada, setCategoriaSeleccionada] =
     useState('TODAS')
+
+  const [movimientoEditando, setMovimientoEditando] =
+    useState<any>(null)
 
   const meses = [
     'ENERO',
@@ -34,7 +39,81 @@ export default function DashboardMovimientos() {
   useEffect(() => {
     cargarMovimientos()
   }, [mesSeleccionado])
+async function borrarMovimiento(id: number) {
 
+  const confirmar =
+    window.confirm(
+      '¿Seguro que quieres eliminar este movimiento?'
+    )
+
+  if (!confirmar) return
+
+  const { error } =
+    await supabase
+      .from('gastos')
+      .delete()
+      .eq('id', id)
+
+  if (error) {
+
+    alert(
+      'Error eliminando movimiento'
+    )
+
+    return
+  }
+
+  cargarMovimientos()
+}
+
+    async function guardarEdicion() {
+
+      const { error } =
+        await supabase
+          .from('gastos')
+          .update({
+
+            Fecha:
+              movimientoEditando.Fecha,
+
+            Importe:
+              Number(
+                movimientoEditando.Importe
+              ),
+
+            Categoria:
+              movimientoEditando.Categoria,
+
+            Subcategoria:
+              movimientoEditando.Subcategoria,
+
+            Descripcion:
+              movimientoEditando.Descripcion,
+
+            Usuario:
+              movimientoEditando.Usuario
+
+          })
+          .eq(
+            'id',
+            movimientoEditando.id
+          )
+
+      if (error) {
+
+        alert(
+          'Error guardando'
+        )
+
+        return
+      }
+
+      setMovimientoEditando(
+        null
+      )
+
+      cargarMovimientos()
+    }
   async function cargarMovimientos() {
     const { data, error } =
       await supabase
@@ -130,6 +209,7 @@ export default function DashboardMovimientos() {
     }
   }
 
+
   const categoriasDisponibles = [
     'TODAS',
     ...Array.from(
@@ -193,6 +273,236 @@ const movimientosOrdenados =
 
     <div>
 
+    {/* MODAL EDITAR */}
+
+          {
+        movimientoEditando && (
+
+          <div
+            style={{
+              position: 'fixed',
+              inset: 0,
+              background: 'rgba(0,0,0,0.5)',
+
+              display: 'flex',
+
+              justifyContent: 'center',
+
+              alignItems: 'center',
+
+              zIndex: 9999
+            }}
+          >
+
+            <div
+              style={{
+                backgroundColor: 'white',
+
+                padding: '20px',
+
+                borderRadius: '20px',
+
+                width: '90%',
+
+                maxWidth: '450px'
+              }}
+            >
+
+
+
+          <h2>
+            ✏️ Editar movimiento
+          </h2>
+
+          <input
+            type="date"
+            value={movimientoEditando.Fecha}
+            onChange={(e) =>
+              setMovimientoEditando({
+                ...movimientoEditando,
+                Fecha: e.target.value
+              })
+            }
+            style={inputStyle}
+          />
+
+          <input
+            type="number"
+            step="0.01"
+            value={movimientoEditando.Importe}
+            onChange={(e) =>
+              setMovimientoEditando({
+                ...movimientoEditando,
+                Importe: e.target.value
+              })
+            }
+            style={inputStyle}
+          />
+
+          <select
+            value={movimientoEditando.Categoria}
+            onChange={(e) =>
+
+              setMovimientoEditando({
+
+                ...movimientoEditando,
+
+                Categoria:
+                  e.target.value,
+
+                Subcategoria:
+                  categorias[
+                    e.target.value
+                  ][0]
+
+              })
+
+            }
+            style={inputStyle}
+          >
+            {Object.keys(categorias)
+              .map((categoria) => (
+
+                <option
+                  key={categoria}
+                  value={categoria}
+                >
+                  {categoria}
+                </option>
+
+              ))}
+          </select>
+
+          <select
+            value={
+              movimientoEditando.Subcategoria
+            }
+            onChange={(e) =>
+              setMovimientoEditando({
+
+                ...movimientoEditando,
+
+                Subcategoria:
+                  e.target.value
+
+              })
+            }
+            style={inputStyle}
+          >
+            {
+              categorias[
+                movimientoEditando.Categoria
+              ]?.map((sub) => (
+
+                <option
+                  key={sub}
+                  value={sub}
+                >
+                  {sub}
+                </option>
+
+              ))
+            }
+          </select>
+
+          <select
+            value={
+              movimientoEditando.Usuario
+            }
+            onChange={(e) =>
+              setMovimientoEditando({
+
+                ...movimientoEditando,
+
+                Usuario:
+                  e.target.value
+
+              })
+            }
+            style={inputStyle}
+          >
+            <option value="Marcos">
+              Marcos
+            </option>
+
+            <option value="Ana">
+              Ana
+            </option>
+          </select>
+
+          <textarea
+            value={
+              movimientoEditando.Descripcion
+            }
+
+            onChange={(e) =>
+              setMovimientoEditando({
+
+                ...movimientoEditando,
+
+                Descripcion:
+                  e.target.value
+
+              })
+            }
+
+            rows={4}
+
+            style={inputStyle}
+          />
+
+          <div
+            style={{
+              display: 'flex',
+              gap: '10px',
+              marginTop: '10px'
+            }}
+          >
+
+            <button
+              onClick={
+                guardarEdicion
+              }
+              style={{
+                flex: 1,
+                padding: '12px',
+                background: '#2563eb',
+                color: 'white',
+                border: 'none',
+                borderRadius: '10px'
+              }}
+            >
+              💾 Guardar
+            </button>
+
+            <button
+              onClick={() =>
+                setMovimientoEditando(
+                  null
+                )
+              }
+              style={{
+                flex: 1,
+                padding: '12px',
+                background: '#64748b',
+                color: 'white',
+                border: 'none',
+                borderRadius: '10px'
+              }}
+            >
+              Cancelar
+            </button>
+
+          </div>
+
+
+
+            </div>
+
+          </div>
+
+        )
+      }
       {/* FILTROS */}
 
       <div
@@ -392,23 +702,71 @@ const movimientosOrdenados =
 
                   <div
                     style={{
-                      fontWeight:
-                        'bold',
-                      fontSize:
-                        '24px',
-
-                      color:
-                        Number(
-                          mov.Importe
-                        ) >= 0
-                          ? '#16a34a'
-                          : '#dc2626'
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px'
                     }}
                   >
-                    {formatearImporte(
-                      mov.Importe
-                    )}{' '}
-                    €
+
+                    <div
+                      style={{
+                        fontWeight:
+                          'bold',
+
+                        fontSize:
+                          '24px',
+
+                        color:
+                          Number(
+                            mov.Importe
+                          ) >= 0
+                            ? '#16a34a'
+                            : '#dc2626'
+                      }}
+                    >
+                      {formatearImporte(
+                        mov.Importe
+                      )} €
+                    </div>
+
+                    <button
+                      onClick={() =>
+                        setMovimientoEditando(
+                          mov
+                        )
+                      }
+
+                      style={{
+                        border: 'none',
+                        background:
+                          'none',
+                        cursor: 'pointer',
+                        fontSize:
+                          '20px'
+                      }}
+                    >
+                      ✏️
+                    </button>
+
+                    <button
+                      onClick={() =>
+                        borrarMovimiento(
+                          mov.id
+                        )
+                      }
+
+                      style={{
+                        border: 'none',
+                        background:
+                          'none',
+                        cursor: 'pointer',
+                        fontSize:
+                          '20px'
+                      }}
+                    >
+                      🗑️
+                    </button>
+
                   </div>
 
                 </div>
@@ -461,4 +819,19 @@ const selectorStyle = {
   border: '1px solid #dbe4ee',
   backgroundColor: '#f8fafc',
   fontSize: '15px'
+} as const
+
+const inputStyle = {
+
+  width: '100%',
+
+  padding: '12px',
+
+  borderRadius: '10px',
+
+  border:
+    '1px solid #dbe4ee',
+
+  marginBottom: '10px'
+
 } as const
