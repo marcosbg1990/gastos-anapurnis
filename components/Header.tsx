@@ -15,7 +15,7 @@ export default function Header({
     },
     {
       nombre: 'MOVIMIENTOS',
-      icono: '📋'
+      icono: '💰'
     },
     {
       nombre: 'INFO MENSUAL',
@@ -54,7 +54,7 @@ export default function Header({
           marginBottom: '10px'
         }}
       >
-        💰 Gastos Familiares
+        Anapurnis
       </div>
 
       <div
@@ -81,7 +81,7 @@ export default function Header({
 
               borderRadius: '18px',
 
-              minHeight: '65px',
+              minHeight: '55px',
 
               cursor: 'pointer',
 

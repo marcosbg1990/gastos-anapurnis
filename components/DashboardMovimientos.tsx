@@ -89,13 +89,13 @@ export default function DashboardMovimientos() {
 
       case 'FIJOS':
         return {
-          color: '#2563eb',
+          color: '#4ea5ec',
           icono: '🏠'
         }
 
       case 'COMIDA':
         return {
-          color: '#22c55e',
+          color: '#ffbf0f',
           icono: '🛒'
         }
 
@@ -107,14 +107,19 @@ export default function DashboardMovimientos() {
 
       case 'VEHÍCULOS':
         return {
-          color: '#dc2626',
+          color: '#1b52e9',
           icono: '🚗'
         }
 
       case 'OCIO':
         return {
-          color: '#ec4899',
+          color: '#eb68a9',
           icono: '🎉'
+        }
+      case 'DUDA':
+        return {
+          color: '#ff1100',
+          icono: '⁉️'
         }
 
       default:
@@ -151,27 +156,38 @@ export default function DashboardMovimientos() {
       )
     })
 
-  const movimientosOrdenados =
-    [...movimientosFiltrados]
-      .sort((a, b) => {
+const movimientosOrdenados =
+  [...movimientosFiltrados]
+    .sort((a, b) => {
 
-        if (orden === 'importe') {
-
-          return (
-            Math.abs(
-              Number(b.Importe)
-            ) -
-            Math.abs(
-              Number(a.Importe)
-            )
-          )
-        }
+      if (orden === 'importe') {
 
         return (
-          new Date(b.Fecha).getTime() -
-          new Date(a.Fecha).getTime()
+          Math.abs(Number(b.Importe))
+          -
+          Math.abs(Number(a.Importe))
         )
-      })
+      }
+
+      const fechaA =
+        new Date(a.Fecha).getTime()
+
+      const fechaB =
+        new Date(b.Fecha).getTime()
+
+      // Primero fecha descendente
+      if (fechaA !== fechaB) {
+
+        return fechaB - fechaA
+
+      }
+
+      // Si la fecha es igual,
+      // ordenar por id descendente
+      return b.id - a.id
+
+    })
+
 
   return (
 
