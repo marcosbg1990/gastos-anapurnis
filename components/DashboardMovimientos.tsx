@@ -4,28 +4,19 @@ import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase'
 
 export default function DashboardMovimientos() {
+
   const [mesSeleccionado, setMesSeleccionado] =
     useState(new Date().getMonth() + 1)
 
-  const [movimientos, setMovimientos] = useState<any[]>([])
+  const [movimientos, setMovimientos] =
+    useState<any[]>([])
 
   const [orden, setOrden] =
     useState('fecha')
 
-function formatearImporte(valor: any) {
+  const [categoriaSeleccionada, setCategoriaSeleccionada] =
+    useState('TODAS')
 
-  const numero = Number(valor)
-
-  return new Intl.NumberFormat(
-    'es-ES',
-    {
-      style: 'decimal',
-      useGrouping: true,
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2
-    }
-  ).format(numero)
-}
   const meses = [
     'ENERO',
     'FEBRERO',
@@ -46,9 +37,11 @@ function formatearImporte(valor: any) {
   }, [mesSeleccionado])
 
   async function cargarMovimientos() {
-    const { data, error } = await supabase
-      .from('gastos')
-      .select('*')
+
+    const { data, error } =
+      await supabase
+        .from('gastos')
+        .select('*')
 
     if (error) {
       console.error(error)
@@ -68,6 +61,20 @@ function formatearImporte(valor: any) {
       })
 
     setMovimientos(movimientosMes)
+  }
+
+  function formatearImporte(
+    valor: any
+  ) {
+    const numero = Number(valor)
+
+    return numero.toLocaleString(
+      'es-ES',
+      {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      }
+    )
   }
 
   function obtenerCategoriaInfo(
@@ -132,254 +139,233 @@ function formatearImporte(valor: any) {
     }
   }
 
-  const movimientosOrdenados =
-    [...movimientos].sort((a, b) => {
-
-      if (orden === 'importe') {
-
-        return (
-          Math.abs(Number(b.Importe))
-          -
-          Math.abs(Number(a.Importe))
+  const categoriasDisponibles = [
+    'TODAS',
+    ...Array.from(
+      new Set(
+        movimientos.map(
+          (m) => m.Categoria
         )
+      )
+    )
+  ]
+
+  const movimientosFiltrados =
+    movimientos.filter((mov) => {
+
+      if (
+        categoriaSeleccionada === 'TODAS'
+      ) {
+        return true
       }
 
       return (
-        new Date(b.Fecha).getTime()
-        -
-        new Date(a.Fecha).getTime()
+        mov.Categoria ===
+        categoriaSeleccionada
       )
     })
 
+  const movimientosOrdenados =
+    [...movimientosFiltrados]
+      .sort((a, b) => {
+
+        if (orden === 'importe') {
+
+          return (
+            Math.abs(Number(b.Importe))
+            -
+            Math.abs(Number(a.Importe))
+          )
+        }
+
+        return (
+          new Date(b.Fecha).getTime()
+          -
+          new Date(a.Fecha).getTime()
+        )
+      })
+
   return (
 
-    <div
-      style={{
-        display: 'flex',
-        gap: '20px'
-      }}
-    >
+    <div>
 
-      {/* MENU MESES */}
+      {/* CABECERA */}
 
       <div
         style={{
-          width: '220px',
           backgroundColor: 'white',
-          padding: '20px',
+          padding: '15px',
           borderRadius: '12px',
-          boxShadow:
-            '0px 2px 8px rgba(0,0,0,0.1)'
-        }}
-      >
-        <h3>📅 Meses</h3>
-
-        {meses.map((mes, index) => (
-
-          <button
-            key={mes}
-
-            onClick={() =>
-              setMesSeleccionado(
-                index + 1
-              )
-            }
-
-            style={{
-              width: '100%',
-              padding: '10px',
-              marginBottom: '5px',
-
-              border: 'none',
-              borderRadius: '8px',
-
-              cursor: 'pointer',
-
-              backgroundColor:
-                mesSeleccionado ===
-                index + 1
-                  ? '#2563eb'
-                  : '#e5e7eb',
-
-              color:
-                mesSeleccionado ===
-                index + 1
-                  ? 'white'
-                  : 'black'
-            }}
-          >
-            {mes}
-          </button>
-
-        ))}
-      </div>
-
-      {/* CONTENIDO */}
-
-      <div
-        style={{
-          flex: 1
+          marginBottom: '20px'
         }}
       >
 
-        <div
-          style={{
-            backgroundColor: 'white',
-            padding: '20px',
-            borderRadius: '12px',
-            marginBottom: '20px'
-          }}
-        >
-
-          <h2>
-            📋 Movimientos de {
-              meses[
-                mesSeleccionado - 1
-              ]
-            }
-          </h2>
-
-          <div
-            style={{
-              marginTop: '15px'
-            }}
-          >
-
-            Ordenar por:
-
-            <select
-              value={orden}
-
-              onChange={(e) =>
-                setOrden(
-                  e.target.value
-                )
-              }
-
-              style={{
-                marginLeft: '10px',
-                padding: '5px'
-              }}
-            >
-
-              <option value="fecha">
-                Fecha
-              </option>
-
-              <option value="importe">
-                Importe
-              </option>
-
-            </select>
-
-          </div>
-
-        </div>
-
-        {/* MOVIMIENTOS */}
+        <h2>
+          📋 Movimientos
+        </h2>
 
         <div
           style={{
             display: 'flex',
             flexDirection: 'column',
-            gap: '12px'
+            gap: '10px',
+            marginTop: '15px'
           }}
         >
 
-          {movimientosOrdenados.map(
-            (mov) => {
-
-              const categoriaInfo =
-                obtenerCategoriaInfo(
-                  mov.Categoria
+          <select
+            value={mesSeleccionado}
+            onChange={(e) =>
+              setMesSeleccionado(
+                Number(
+                  e.target.value
                 )
+              )
+            }
+            style={{
+              padding: '12px',
+              borderRadius: '8px'
+            }}
+          >
 
-              return (
+            {meses.map((mes, index) => (
+
+              <option
+                key={mes}
+                value={index + 1}
+              >
+                {mes}
+              </option>
+
+            ))}
+          </select>
+
+          <select
+            value={
+              categoriaSeleccionada
+            }
+            onChange={(e) =>
+              setCategoriaSeleccionada(
+                e.target.value
+              )
+            }
+            style={{
+              padding: '12px',
+              borderRadius: '8px'
+            }}
+          >
+
+            {categoriasDisponibles.map(
+              (categoria) => (
+
+                <option
+                  key={categoria}
+                  value={categoria}
+                >
+                  {categoria}
+                </option>
+
+              )
+            )}
+
+          </select>
+
+          <select
+            value={orden}
+            onChange={(e) =>
+              setOrden(
+                e.target.value
+              )
+            }
+            style={{
+              padding: '12px',
+              borderRadius: '8px'
+            }}
+          >
+
+            <option value="fecha">
+              Ordenar por fecha
+            </option>
+
+            <option value="importe">
+              Ordenar por importe
+            </option>
+
+          </select>
+
+        </div>
+
+      </div>
+
+      {/* TARJETAS */}
+
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '12px'
+        }}
+      >
+
+        {movimientosOrdenados.map(
+          (mov) => {
+
+            const categoriaInfo =
+              obtenerCategoriaInfo(
+                mov.Categoria
+              )
+
+            return (
+
+              <div
+                key={mov.id}
+
+                style={{
+                  backgroundColor:
+                    'white',
+
+                  borderLeft:
+                    `8px solid ${categoriaInfo.color}`,
+
+                  borderRadius:
+                    '12px',
+
+                  padding: '15px',
+
+                  boxShadow:
+                    '0 2px 6px rgba(0,0,0,0.08)'
+                }}
+              >
 
                 <div
-                  key={mov.id}
-
                   style={{
-                    backgroundColor:
-                      'white',
-
-                    borderLeft:
-                      `8px solid ${categoriaInfo.color}`,
-
-                    borderRadius:
-                      '12px',
-
-                    padding: '15px',
-
-                    boxShadow:
-                      '0px 2px 6px rgba(0,0,0,0.08)',
-
-                    display:
-                      'flex',
-
+                    display: 'flex',
                     justifyContent:
                       'space-between',
-
-                    alignItems:
-                      'center'
+                    alignItems: 'center'
                   }}
                 >
 
-                  <div>
-
-                    <div
-                      style={{
-                        fontSize:
-                          '18px',
-
-                        fontWeight:
-                          'bold'
-                      }}
-                    >
-                      {categoriaInfo.icono}
-                      {' '}
-                      {mov.Categoria}
-                    </div>
-
-                    <div
-                      style={{
-                        color:
-                          '#64748b'
-                      }}
-                    >
-                      {mov.Subcategoria}
-                    </div>
-
-                    <div
-                      style={{
-                        marginTop:
-                          '5px'
-                      }}
-                    >
-                      {mov.Descripcion}
-                    </div>
-
-                    <div
-                      style={{
-                        fontSize:
-                          '12px',
-
-                        color:
-                          '#94a3b8'
-                      }}
-                    >
-                      {mov.Fecha}
-                    </div>
-
+                  <div
+                    style={{
+                      fontWeight:
+                        'bold',
+                      fontSize:
+                        '18px'
+                    }}
+                  >
+                    {categoriaInfo.icono}
+                    {' '}
+                    {mov.Categoria}
                   </div>
 
                   <div
                     style={{
-                      fontSize:
-                        '24px',
-
                       fontWeight:
                         'bold',
+
+                      fontSize:
+                        '22px',
 
                       color:
                         Number(
@@ -389,23 +375,57 @@ function formatearImporte(valor: any) {
                           : '#dc2626'
                     }}
                   >
-                    <div>
-                      {formatearImporte(mov.Importe)} €
-                    </div>
-
+                    {formatearImporte(
+                      mov.Importe
+                    )}
+                    {' '}€
                   </div>
 
                 </div>
 
-              )
-            }
-          )}
+                <div
+                  style={{
+                    color:
+                      '#64748b',
+                    marginTop:
+                      '4px'
+                  }}
+                >
+                  {mov.Subcategoria}
+                </div>
 
-        </div>
+                <div
+                  style={{
+                    marginTop:
+                      '6px'
+                  }}
+                >
+                  {mov.Descripcion}
+                </div>
+
+                <div
+                  style={{
+                    marginTop:
+                      '8px',
+
+                    fontSize:
+                      '12px',
+
+                    color:
+                      '#94a3b8'
+                  }}
+                >
+                  {mov.Fecha}
+                </div>
+
+              </div>
+
+            )
+          }
+        )}
 
       </div>
 
     </div>
-
   )
 }
