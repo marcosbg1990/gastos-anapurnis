@@ -36,7 +36,7 @@ export default function Header({
 
         borderRadius: '24px',
 
-        padding: '16px',
+        padding: '12px',
 
         marginBottom: '20px',
 
@@ -49,9 +49,9 @@ export default function Header({
         style={{
           color: 'white',
           textAlign: 'center',
-          fontSize: '26px',
+          fontSize: '20px',
           fontWeight: 'bold',
-          marginBottom: '14px'
+          marginBottom: '10px'
         }}
       >
         💰 Gastos Familiares
@@ -81,7 +81,7 @@ export default function Header({
 
               borderRadius: '18px',
 
-              minHeight: '90px',
+              minHeight: '65px',
 
               cursor: 'pointer',
 
@@ -109,21 +109,13 @@ export default function Header({
 
             <div
               style={{
-                fontSize: '30px'
+                fontSize: '20px'
               }}
             >
               {opcion.icono}
             </div>
 
-            <div
-              style={{
-                marginTop: '6px',
-                fontSize: '12px',
-                fontWeight: 'bold'
-              }}
-            >
-              {opcion.nombre}
-            </div>
+
 
           </button>
 

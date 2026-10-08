@@ -186,37 +186,7 @@ export default function IntroducirGasto() {
       }}
     >
 
-      {/* CABECERA */}
 
-      <div
-        style={{
-          background:
-            'linear-gradient(135deg,#0ea5e9,#1d4ed8)',
-          color: 'white',
-          borderRadius: '18px',
-          padding: '20px',
-          marginBottom: '20px'
-        }}
-      >
-
-        <h2
-          style={{
-            margin: 0
-          }}
-        >
-          🧾 Nuevo Gasto
-        </h2>
-
-        <div
-          style={{
-            marginTop: '5px',
-            opacity: 0.9
-          }}
-        >
-          {fecha}
-        </div>
-
-      </div>
 
       {/* FORMULARIO */}
 
@@ -257,6 +227,8 @@ export default function IntroducirGasto() {
 
           <input
             type="number"
+            inputMode="decimal"
+            enterKeyHint="done"
             step="0.01"
             placeholder="💶 Importe"
             value={importe}
@@ -265,7 +237,15 @@ export default function IntroducirGasto() {
                 e.target.value
               )
             }
-            style={inputStyle}
+            style={{
+              ...inputStyle,
+
+              fontSize: '32px',
+
+              fontWeight: 'bold',
+
+              textAlign: 'center'
+            }}
           />
 
           <select
