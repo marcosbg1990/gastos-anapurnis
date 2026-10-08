@@ -9,74 +9,129 @@ export default function Header({
 }: Props) {
 
   const opciones = [
-    'INTRODUCIR GASTO',
-    'MOVIMIENTOS',
-    'RESUMEN MENSUAL',
-    'RESUMEN ANUAL',
-    'RESERVA1',
-    'RESERVA2_prueba'
+    {
+      nombre: 'NUEVO GASTO',
+      icono: '➕'
+    },
+    {
+      nombre: 'MOVIMIENTOS',
+      icono: '📋'
+    },
+    {
+      nombre: 'INFO MENSUAL',
+      icono: '📊'
+    },
+    {
+      nombre: 'INFO ANUAL',
+      icono: '📈'
+    }
   ]
 
   return (
+
     <div
       style={{
-        backgroundColor: '#0f172a',
-        borderRadius: '12px',
+        background:
+          'linear-gradient(135deg,#0f172a,#1e293b)',
+        borderRadius: '16px',
         padding: '15px',
-        marginBottom: '25px',
-        boxShadow: '0 4px 10px rgba(0,0,0,0.15)'
+        marginBottom: '20px',
+        boxShadow:
+          '0 4px 15px rgba(0,0,0,0.15)'
       }}
     >
-      {/* TITULO APP */}
+
+      {/* TITULO */}
 
       <div
         style={{
           color: 'white',
-          fontSize: '24px',
+          fontSize: '22px',
           fontWeight: 'bold',
+          textAlign: 'center',
           marginBottom: '15px'
         }}
       >
         💰 Gastos Familiares
       </div>
 
-      {/* BOTONES MENU */}
+      {/* MENU */}
 
       <div
         style={{
-          display: 'flex',
-          flexWrap: 'wrap',
+          display: 'grid',
+          gridTemplateColumns:
+            'repeat(auto-fit,minmax(120px,1fr))',
           gap: '10px'
         }}
       >
+
         {opciones.map((opcion) => (
 
           <button
-            key={opcion}
-            onClick={() => setPantalla(opcion)}
+            key={opcion.nombre}
+
+            onClick={() =>
+              setPantalla(
+                opcion.nombre
+              )
+            }
+
             style={{
               border: 'none',
-              borderRadius: '8px',
-              padding: '12px 18px',
+
+              borderRadius: '12px',
+
+              padding: '14px 10px',
+
               cursor: 'pointer',
+
               fontWeight: 'bold',
-              fontSize: '14px',
+
+              fontSize: '13px',
+
+              minHeight: '70px',
+
+              display: 'flex',
+
+              flexDirection: 'column',
+
+              justifyContent: 'center',
+
+              alignItems: 'center',
+
+              gap: '5px',
 
               backgroundColor:
-                pantalla === opcion
+                pantalla === opcion.nombre
                   ? '#2563eb'
                   : '#334155',
 
               color: 'white',
 
-              transition: '0.2s'
+              transition: 'all 0.2s'
             }}
           >
-            {opcion}
+
+            <div
+              style={{
+                fontSize: '22px'
+              }}
+            >
+              {opcion.icono}
+            </div>
+
+            <div>
+              {opcion.nombre}
+            </div>
+
           </button>
 
         ))}
+
       </div>
+
     </div>
+
   )
 }

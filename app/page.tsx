@@ -26,15 +26,15 @@ export default function Home() {
         setPantalla={setPantalla}
       />
 
-      {pantalla === 'RESUMEN MENSUAL' && (
+      {pantalla === 'INFO MENSUAL' && (
         <DashboardMensual />
       )}
 
-      {pantalla === 'RESUMEN ANUAL' && (
+      {pantalla === 'INFO ANUAL' && (
         <DashboardAnual />
       )}
 
-      {pantalla === 'INTRODUCIR GASTO' && (
+      {pantalla === 'NUEVO GASTO' && (
         <IntroducirGasto />
       )}
 
@@ -42,17 +42,6 @@ export default function Home() {
         <DashboardMovimientos />
       )}
 
-      {pantalla === 'RESERVA1' && (
-        <div>
-          <h2>🚧 Reserva 1</h2>
-        </div>
-      )}
-
-      {pantalla === 'RESERVA2' && (
-        <div>
-          <h2>🚧 Reserva 2</h2>
-        </div>
-      )}
     </div>
   )
 }
