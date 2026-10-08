@@ -1,40 +1,58 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { supabase } from '../lib/supabase'
+import { useState } from 'react'
+
+import Header from '../components/Header'
+import DashboardMensual from '../components/DashboardMensual'
+import DashboardAnual from '../components/DashboardAnual'
+import IntroducirGasto from '../components/IntroducirGasto'
+import DashboardMovimientos from '../components/DashboardMovimientos'
 
 export default function Home() {
-  const [gastos, setGastos] = useState<any[]>([])
 
-  useEffect(() => {
-    cargarGastos()
-  }, [])
-
-  async function cargarGastos() {
-    const { data, error } = await supabase
-      .from('gastos')
-      .select('*')
-
-    if (error) {
-      console.error(error)
-      return
-    }
-
-    setGastos(data || [])
-  }
+  const [pantalla, setPantalla] =
+    useState('RESUMEN MENSUAL')
 
   return (
-    <div style={{ padding: '20px' }}>
-      <h1>Mis Gastos</h1>
+    <div
+      style={{
+        backgroundColor: '#f5f7fa',
+        minHeight: '100vh',
+        padding: '20px'
+      }}
+    >
+      <Header
+        pantalla={pantalla}
+        setPantalla={setPantalla}
+      />
 
-      {gastos.map((gasto) => (
-        <div key={gasto.id}>
-          <hr />
-          <p>Categoría: {gasto.Categoria}</p>
-          <p>Subcategoría: {gasto.Subcategoria}</p>
-          <p>Importe: {gasto.Importe} €</p>
+      {pantalla === 'RESUMEN MENSUAL' && (
+        <DashboardMensual />
+      )}
+
+      {pantalla === 'RESUMEN ANUAL' && (
+        <DashboardAnual />
+      )}
+
+      {pantalla === 'INTRODUCIR GASTO' && (
+        <IntroducirGasto />
+      )}
+
+      {pantalla === 'MOVIMIENTOS' && (
+        <DashboardMovimientos />
+      )}
+
+      {pantalla === 'RESERVA1' && (
+        <div>
+          <h2>🚧 Reserva 1</h2>
         </div>
-      ))}
+      )}
+
+      {pantalla === 'RESERVA2' && (
+        <div>
+          <h2>🚧 Reserva 2</h2>
+        </div>
+      )}
     </div>
   )
 }
