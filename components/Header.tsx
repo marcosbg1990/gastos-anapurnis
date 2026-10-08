@@ -14,7 +14,7 @@ export default function Header({
     'RESUMEN MENSUAL',
     'RESUMEN ANUAL',
     'RESERVA1',
-    'RESERVA2'
+    'RESERVA2_prueba'
   ]
 
   return (
