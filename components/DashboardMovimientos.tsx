@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase'
 
 export default function DashboardMovimientos() {
-
   const [mesSeleccionado, setMesSeleccionado] =
     useState(new Date().getMonth() + 1)
 
@@ -37,7 +36,6 @@ export default function DashboardMovimientos() {
   }, [mesSeleccionado])
 
   async function cargarMovimientos() {
-
     const { data, error } =
       await supabase
         .from('gastos')
@@ -64,17 +62,17 @@ export default function DashboardMovimientos() {
   }
 
   function formatearImporte(
-    valor: any
+    valor: number
   ) {
-    const numero = Number(valor)
 
-    return numero.toLocaleString(
-      'es-ES',
-      {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2
-      }
-    )
+    return Number(valor)
+      .toLocaleString(
+        'es-ES',
+        {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        }
+      )
   }
 
   function obtenerCategoriaInfo(
@@ -83,10 +81,10 @@ export default function DashboardMovimientos() {
 
     switch (categoria) {
 
-      case 'COMIDA':
+      case 'INGRESO':
         return {
           color: '#16a34a',
-          icono: '🛒'
+          icono: '💰'
         }
 
       case 'FIJOS':
@@ -95,28 +93,10 @@ export default function DashboardMovimientos() {
           icono: '🏠'
         }
 
-      case 'GENERAL':
+      case 'COMIDA':
         return {
-          color: '#64748b',
-          icono: '📦'
-        }
-
-      case 'INGRESO':
-        return {
-          color: '#059669',
-          icono: '💰'
-        }
-
-      case 'OCIO':
-        return {
-          color: '#ec4899',
-          icono: '🎉'
-        }
-
-      case 'HOGAR':
-        return {
-          color: '#d97706',
-          icono: '🛠️'
+          color: '#22c55e',
+          icono: '🛒'
         }
 
       case 'LARA_LUCA':
@@ -131,10 +111,16 @@ export default function DashboardMovimientos() {
           icono: '🚗'
         }
 
+      case 'OCIO':
+        return {
+          color: '#ec4899',
+          icono: '🎉'
+        }
+
       default:
         return {
-          color: '#475569',
-          icono: '📄'
+          color: '#64748b',
+          icono: '📦'
         }
     }
   }
@@ -172,15 +158,17 @@ export default function DashboardMovimientos() {
         if (orden === 'importe') {
 
           return (
-            Math.abs(Number(b.Importe))
-            -
-            Math.abs(Number(a.Importe))
+            Math.abs(
+              Number(b.Importe)
+            ) -
+            Math.abs(
+              Number(a.Importe)
+            )
           )
         }
 
         return (
-          new Date(b.Fecha).getTime()
-          -
+          new Date(b.Fecha).getTime() -
           new Date(a.Fecha).getTime()
         )
       })
@@ -189,13 +177,13 @@ export default function DashboardMovimientos() {
 
     <div>
 
-      {/* CABECERA */}
+      {/* FILTROS */}
 
       <div
         style={{
           backgroundColor: 'white',
+          borderRadius: '20px',
           padding: '15px',
-          borderRadius: '12px',
           marginBottom: '20px'
         }}
       >
@@ -206,10 +194,10 @@ export default function DashboardMovimientos() {
 
         <div
           style={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '10px',
-            marginTop: '15px'
+            display: 'grid',
+            gridTemplateColumns:
+              '1fr 1fr',
+            gap: '10px'
           }}
         >
 
@@ -222,22 +210,25 @@ export default function DashboardMovimientos() {
                 )
               )
             }
-            style={{
-              padding: '12px',
-              borderRadius: '8px'
-            }}
+            style={selectorStyle}
           >
 
-            {meses.map((mes, index) => (
+            {meses.map(
+              (
+                mes,
+                index
+              ) => (
 
-              <option
-                key={mes}
-                value={index + 1}
-              >
-                {mes}
-              </option>
+                <option
+                  key={mes}
+                  value={index + 1}
+                >
+                  {mes}
+                </option>
 
-            ))}
+              )
+            )}
+
           </select>
 
           <select
@@ -249,18 +240,21 @@ export default function DashboardMovimientos() {
                 e.target.value
               )
             }
-            style={{
-              padding: '12px',
-              borderRadius: '8px'
-            }}
+            style={selectorStyle}
           >
 
             {categoriasDisponibles.map(
-              (categoria) => (
+              (
+                categoria
+              ) => (
 
                 <option
-                  key={categoria}
-                  value={categoria}
+                  key={
+                    categoria
+                  }
+                  value={
+                    categoria
+                  }
                 >
                   {categoria}
                 </option>
@@ -270,34 +264,35 @@ export default function DashboardMovimientos() {
 
           </select>
 
-          <select
-            value={orden}
-            onChange={(e) =>
-              setOrden(
-                e.target.value
-              )
-            }
-            style={{
-              padding: '12px',
-              borderRadius: '8px'
-            }}
-          >
-
-            <option value="fecha">
-              Ordenar por fecha
-            </option>
-
-            <option value="importe">
-              Ordenar por importe
-            </option>
-
-          </select>
-
         </div>
+
+        <select
+          value={orden}
+          onChange={(e) =>
+            setOrden(
+              e.target.value
+            )
+          }
+          style={{
+            ...selectorStyle,
+            width: '100%',
+            marginTop: '10px'
+          }}
+        >
+
+          <option value="fecha">
+            Ordenar por fecha
+          </option>
+
+          <option value="importe">
+            Ordenar por importe
+          </option>
+
+        </select>
 
       </div>
 
-      {/* TARJETAS */}
+      {/* MOVIMIENTOS */}
 
       <div
         style={{
@@ -319,21 +314,20 @@ export default function DashboardMovimientos() {
 
               <div
                 key={mov.id}
-
                 style={{
                   backgroundColor:
                     'white',
 
                   borderLeft:
-                    `8px solid ${categoriaInfo.color}`,
+                    `6px solid ${categoriaInfo.color}`,
 
                   borderRadius:
-                    '12px',
+                    '18px',
 
-                  padding: '15px',
+                  padding: '14px',
 
                   boxShadow:
-                    '0 2px 6px rgba(0,0,0,0.08)'
+                    '0 4px 10px rgba(0,0,0,.08)'
                 }}
               >
 
@@ -342,30 +336,50 @@ export default function DashboardMovimientos() {
                     display: 'flex',
                     justifyContent:
                       'space-between',
-                    alignItems: 'center'
+                    alignItems:
+                      'center'
                   }}
                 >
 
-                  <div
-                    style={{
-                      fontWeight:
-                        'bold',
-                      fontSize:
-                        '18px'
-                    }}
-                  >
-                    {categoriaInfo.icono}
-                    {' '}
-                    {mov.Categoria}
+                  <div>
+
+                    <div
+                      style={{
+                        fontWeight:
+                          'bold',
+                        fontSize:
+                          '18px'
+                      }}
+                    >
+                      {
+                        categoriaInfo.icono
+                      }{' '}
+                      {
+                        mov.Categoria
+                      }
+                    </div>
+
+                    <div
+                      style={{
+                        color:
+                          '#64748b',
+                        fontSize:
+                          '13px'
+                      }}
+                    >
+                      {
+                        mov.Subcategoria
+                      }
+                    </div>
+
                   </div>
 
                   <div
                     style={{
                       fontWeight:
                         'bold',
-
                       fontSize:
-                        '22px',
+                        '24px',
 
                       color:
                         Number(
@@ -377,27 +391,22 @@ export default function DashboardMovimientos() {
                   >
                     {formatearImporte(
                       mov.Importe
-                    )}
-                    {' '}€
+                    )}{' '}
+                    €
                   </div>
 
                 </div>
 
                 <div
                   style={{
-                    color:
-                      '#64748b',
                     marginTop:
-                      '4px'
-                  }}
-                >
-                  {mov.Subcategoria}
-                </div>
+                      '10px',
 
-                <div
-                  style={{
-                    marginTop:
-                      '6px'
+                    paddingTop:
+                      '8px',
+
+                    borderTop:
+                      '1px solid #e5e7eb'
                   }}
                 >
                   {mov.Descripcion}
@@ -408,14 +417,14 @@ export default function DashboardMovimientos() {
                     marginTop:
                       '8px',
 
-                    fontSize:
-                      '12px',
-
                     color:
-                      '#94a3b8'
+                      '#94a3b8',
+
+                    fontSize:
+                      '12px'
                   }}
                 >
-                  {mov.Fecha}
+                  📅 {mov.Fecha}
                 </div>
 
               </div>
@@ -429,3 +438,11 @@ export default function DashboardMovimientos() {
     </div>
   )
 }
+
+const selectorStyle = {
+  padding: '12px',
+  borderRadius: '12px',
+  border: '1px solid #dbe4ee',
+  backgroundColor: '#f8fafc',
+  fontSize: '15px'
+} as const

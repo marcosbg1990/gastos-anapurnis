@@ -32,36 +32,35 @@ export default function Header({
     <div
       style={{
         background:
-          'linear-gradient(135deg,#0f172a,#1e293b)',
-        borderRadius: '16px',
-        padding: '15px',
+          'linear-gradient(180deg,#051634,#0b2345)',
+
+        borderRadius: '24px',
+
+        padding: '16px',
+
         marginBottom: '20px',
+
         boxShadow:
-          '0 4px 15px rgba(0,0,0,0.15)'
+          '0 8px 25px rgba(0,0,0,0.20)'
       }}
     >
-
-      {/* TITULO */}
 
       <div
         style={{
           color: 'white',
-          fontSize: '22px',
-          fontWeight: 'bold',
           textAlign: 'center',
-          marginBottom: '15px'
+          fontSize: '26px',
+          fontWeight: 'bold',
+          marginBottom: '14px'
         }}
       >
         💰 Gastos Familiares
       </div>
 
-      {/* MENU */}
-
       <div
         style={{
           display: 'grid',
-          gridTemplateColumns:
-            'repeat(auto-fit,minmax(120px,1fr))',
+          gridTemplateColumns: '1fr 1fr',
           gap: '10px'
         }}
       >
@@ -80,17 +79,23 @@ export default function Header({
             style={{
               border: 'none',
 
-              borderRadius: '12px',
+              borderRadius: '18px',
 
-              padding: '14px 10px',
+              minHeight: '90px',
 
               cursor: 'pointer',
 
-              fontWeight: 'bold',
+              color: 'white',
 
-              fontSize: '13px',
+              background:
+                pantalla === opcion.nombre
+                  ? 'linear-gradient(135deg,#2563eb,#60a5fa)'
+                  : 'linear-gradient(135deg,#10203d,#162f57)',
 
-              minHeight: '70px',
+              boxShadow:
+                pantalla === opcion.nombre
+                  ? '0 0 20px rgba(96,165,250,.7)'
+                  : '0 3px 10px rgba(0,0,0,.3)',
 
               display: 'flex',
 
@@ -98,30 +103,25 @@ export default function Header({
 
               justifyContent: 'center',
 
-              alignItems: 'center',
-
-              gap: '5px',
-
-              backgroundColor:
-                pantalla === opcion.nombre
-                  ? '#2563eb'
-                  : '#334155',
-
-              color: 'white',
-
-              transition: 'all 0.2s'
+              alignItems: 'center'
             }}
           >
 
             <div
               style={{
-                fontSize: '22px'
+                fontSize: '30px'
               }}
             >
               {opcion.icono}
             </div>
 
-            <div>
+            <div
+              style={{
+                marginTop: '6px',
+                fontSize: '12px',
+                fontWeight: 'bold'
+              }}
+            >
               {opcion.nombre}
             </div>
 

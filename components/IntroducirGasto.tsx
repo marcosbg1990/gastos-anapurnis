@@ -7,11 +7,7 @@ export default function IntroducirGasto() {
 
   const categorias: Record<string, string[]> = {
 
-    INGRESO: [
-      'Ana',
-      'Marcos',
-      'Otros'
-    ],
+    INGRESO: ['Ana', 'Marcos', 'Otros'],
 
     FIJOS: [
       'Hipoteca',
@@ -148,60 +144,34 @@ export default function IntroducirGasto() {
 
   async function guardarGasto() {
 
-    if (!importe) {
-
-      alert(
-        'Introduce un importe'
-      )
-
-      return
-    }
-
     const { error } =
       await supabase
         .from('gastos')
         .insert([
-
           {
             Fecha: fecha,
-
-            Importe:
-              Number(
-                importe.replace(
-                  ',',
-                  '.'
-                )
-              ),
-
-            Categoria:
-              categoria,
-
-            Subcategoria:
-              subcategoria,
-
-            Descripcion:
-              descripcion,
-
-            Usuario:
-              usuario
+            Importe: Number(
+              importe.replace(',', '.')
+            ),
+            Categoria: categoria,
+            Subcategoria: subcategoria,
+            Descripcion: descripcion,
+            Usuario: usuario
           }
-
         ])
 
     if (error) {
-
-      console.error(error)
 
       alert(
         'Error al guardar'
       )
 
+      console.error(error)
+
       return
     }
 
-    alert(
-      '✅ Gasto guardado'
-    )
+    alert('✅ Gasto guardado')
 
     setImporte('')
     setDescripcion('')
@@ -216,24 +186,61 @@ export default function IntroducirGasto() {
       }}
     >
 
+      {/* CABECERA */}
+
       <div
         style={{
-          backgroundColor: 'white',
-          borderRadius: '12px',
-          padding: '20px'
+          background:
+            'linear-gradient(135deg,#0ea5e9,#1d4ed8)',
+          color: 'white',
+          borderRadius: '18px',
+          padding: '20px',
+          marginBottom: '20px'
         }}
       >
 
-        <h2>
-          ➕ Nuevo gasto
+        <h2
+          style={{
+            margin: 0
+          }}
+        >
+          🧾 Nuevo Gasto
         </h2>
+
+        <div
+          style={{
+            marginTop: '5px',
+            opacity: 0.9
+          }}
+        >
+          {fecha}
+        </div>
+
+      </div>
+
+      {/* FORMULARIO */}
+
+      <div
+        style={{
+          backgroundColor:
+            'white',
+
+          borderRadius:
+            '18px',
+
+          padding: '20px',
+
+          boxShadow:
+            '0 4px 10px rgba(0,0,0,0.08)'
+        }}
+      >
 
         <div
           style={{
             display: 'flex',
             flexDirection:
               'column',
-            gap: '12px'
+            gap: '15px'
           }}
         >
 
@@ -245,18 +252,20 @@ export default function IntroducirGasto() {
                 e.target.value
               )
             }
+            style={inputStyle}
           />
 
           <input
             type="number"
             step="0.01"
-            placeholder="Importe"
+            placeholder="💶 Importe"
             value={importe}
             onChange={(e) =>
               setImporte(
                 e.target.value
               )
             }
+            style={inputStyle}
           />
 
           <select
@@ -274,19 +283,20 @@ export default function IntroducirGasto() {
               )
 
             }}
+            style={inputStyle}
           >
 
-            {Object.keys(
-              categorias
-            ).map((cat) => (
+            {Object
+              .keys(categorias)
+              .map((cat) => (
 
-              <option
-                key={cat}
-              >
-                {cat}
-              </option>
+                <option
+                  key={cat}
+                >
+                  {cat}
+                </option>
 
-            ))}
+              ))}
 
           </select>
 
@@ -297,6 +307,7 @@ export default function IntroducirGasto() {
                 e.target.value
               )
             }
+            style={inputStyle}
           >
 
             {categorias[
@@ -320,6 +331,7 @@ export default function IntroducirGasto() {
                 e.target.value
               )
             }
+            style={inputStyle}
           >
 
             <option>
@@ -334,13 +346,17 @@ export default function IntroducirGasto() {
 
           <textarea
             rows={4}
-            placeholder="Comentario"
+            placeholder="📝 Comentario"
             value={descripcion}
             onChange={(e) =>
               setDescripcion(
                 e.target.value
               )
             }
+            style={{
+              ...inputStyle,
+              resize: 'none'
+            }}
           />
 
           <button
@@ -348,20 +364,29 @@ export default function IntroducirGasto() {
               guardarGasto
             }
             style={{
-              padding: '15px',
               border: 'none',
+
               borderRadius:
-                '10px',
-              background:
-                '#2563eb',
-              color: 'white',
+                '14px',
+
+              padding: '16px',
+
+              fontSize:
+                '18px',
+
               fontWeight:
                 'bold',
-              fontSize:
-                '16px'
+
+              background:
+                'linear-gradient(135deg,#0ea5e9,#1d4ed8)',
+
+              color: 'white',
+
+              cursor:
+                'pointer'
             }}
           >
-            GUARDAR GASTO
+            💾 GUARDAR GASTO
           </button>
 
         </div>
@@ -369,5 +394,24 @@ export default function IntroducirGasto() {
       </div>
 
     </div>
+
   )
 }
+
+const inputStyle = {
+
+  padding: '14px',
+
+  borderRadius: '12px',
+
+  border:
+    '1px solid #dbe4ee',
+
+  fontSize: '16px',
+
+  width: '100%',
+
+  backgroundColor:
+    '#f8fafc'
+
+} as const
