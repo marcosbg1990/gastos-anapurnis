@@ -195,7 +195,7 @@ async function borrarMovimiento(id: number) {
           color: '#eb68a9',
           icono: '🎉'
         }
-      case 'DUDA':
+      case 'UNSELECTED':
         return {
           color: '#ff1100',
           icono: '⁉️'

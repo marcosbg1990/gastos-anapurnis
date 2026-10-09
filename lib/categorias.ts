@@ -115,7 +115,7 @@ export const categorias: Record<string, string[]> = {
     'Ahorro'
   ],
 
-  DUDA: [
-    'Revisar'
+  "UNSELECTED": [
+    ''
   ]
 }

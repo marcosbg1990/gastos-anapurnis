@@ -20,13 +20,13 @@ export default function IntroducirGasto() {
     useState('')
 
   const [categoria, setCategoria] =
-    useState('INGRESO')
+    useState('UNSELECTED')
 
   const [subcategoria, setSubcategoria] =
-    useState('Ana')
+    useState('')
 
   const [usuario, setUsuario] =
-    useState('Marcos')
+    useState('Ana')
 
   const [descripcion, setDescripcion] =
     useState('')
@@ -179,9 +179,7 @@ export default function IntroducirGasto() {
             style={inputStyle}
           >
 
-            {categorias[
-              categoria
-            ].map((sub) => (
+            {(categorias[categoria] || []).map((sub) => (
 
               <option
                 key={sub}
