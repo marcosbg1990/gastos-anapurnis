@@ -19,11 +19,11 @@ export default function Header({
     },
     {
       nombre: 'INFO MENSUAL',
-      icono: '📊'
+      icono: '📈'
     },
     {
       nombre: 'INFO ANUAL',
-      icono: '📈'
+      icono: '📊'
     }
   ]
 

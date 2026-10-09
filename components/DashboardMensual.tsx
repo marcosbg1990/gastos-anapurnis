@@ -89,9 +89,7 @@ export default function DashboardMensual() {
   movimientos.forEach((mov) => {
 
     const importe =
-      Math.abs(
-        Number(mov.Importe)
-      )
+      Number(mov.Importe)
 
     resumenSubcategorias[
       mov.Subcategoria
@@ -111,7 +109,7 @@ export default function DashboardMensual() {
       .map(
         ([nombre, total]) => ({
           nombre,
-          total
+          total: Math.abs(total)
         })
       )
       .sort(
@@ -297,7 +295,7 @@ export default function DashboardMensual() {
               const porcentaje =
                 totalCategoria > 0
                   ? (
-                      sub.total
+                      Math.abs(sub.total)
                       /
                       totalCategoria
                     ) * 100

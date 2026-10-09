@@ -119,12 +119,7 @@ export default function DashboardAnual() {
             mov
           ) =>
 
-            acc +
-            Math.abs(
-              Number(
-                mov.Importe
-              )
-            ),
+            acc + Number(mov.Importe),
 
           0
 
@@ -138,8 +133,10 @@ export default function DashboardAnual() {
           meses[mes - 1],
 
         total:
-          Number(
-            totalMes.toFixed(2)
+          Math.abs(
+            Number(
+              totalMes.toFixed(2)
+            )
           )
 
       })
@@ -151,7 +148,7 @@ export default function DashboardAnual() {
     )
 
     setTotalAnual(
-      total
+      Math.abs(total)
     )
   }
 
