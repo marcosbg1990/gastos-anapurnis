@@ -1,17 +1,57 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 import Header from '../components/Header'
 import DashboardMensual from '../components/DashboardMensual'
 import DashboardAnual from '../components/DashboardAnual'
 import IntroducirGasto from '../components/IntroducirGasto'
 import DashboardMovimientos from '../components/DashboardMovimientos'
+import Login from '../components/Login'
 
 export default function Home() {
 
   const [pantalla, setPantalla] =
     useState('RESUMEN MENSUAL')
+
+  const [usuario, setUsuario] =
+    useState('')
+
+  const [cargado, setCargado] =
+    useState(false)
+        
+    useEffect(() => {
+
+      const usuarioGuardado =
+        localStorage.getItem(
+          'usuario'
+        )
+
+      if (
+        usuarioGuardado
+      ) {
+
+        setUsuario(
+          usuarioGuardado
+        )
+
+      }
+
+      setCargado(true)
+
+    }, [])
+
+    if (!cargado) {
+      return null
+    }
+
+    if (!usuario) {
+      return (
+        <Login
+          onLogin={setUsuario}
+        />
+      )
+    }
 
   return (
     <div
@@ -23,7 +63,10 @@ export default function Home() {
     >
       <Header
         pantalla={pantalla}
-        setPantalla={setPantalla}
+        setPantalla={
+          setPantalla
+        }
+        usuario={usuario}
       />
 
       {pantalla === 'INFO MENSUAL' && (

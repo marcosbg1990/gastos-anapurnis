@@ -29,9 +29,6 @@ export default function IntroducirGasto() {
   const [subcategoria, setSubcategoria] =
     useState('')
 
-  const [usuario, setUsuario] =
-    useState('Ana')
-
   const [descripcion, setDescripcion] =
     useState('')
 
@@ -57,8 +54,7 @@ export default function IntroducirGasto() {
                   ),
             Categoria: categoria,
             Subcategoria: subcategoria,
-            Descripcion: descripcion,
-            Usuario: usuario
+            Descripcion: descripcion
           }
         ])
 
@@ -242,26 +238,6 @@ export default function IntroducirGasto() {
               </option>
 
             ))}
-
-          </select>
-
-          <select
-            value={usuario}
-            onChange={(e) =>
-              setUsuario(
-                e.target.value
-              )
-            }
-            style={inputStyle}
-          >
-
-            <option>
-              Marcos
-            </option>
-
-            <option>
-              Ana
-            </option>
 
           </select>
 
