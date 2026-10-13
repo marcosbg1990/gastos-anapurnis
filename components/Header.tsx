@@ -60,74 +60,68 @@ export default function Header({
       }}
     >
 
-      {/* LOGOUT */}
-
-      <button
-        onClick={
-          cerrarSesion
-        }
-        style={{
-          position: 'absolute',
-
-          top: '10px',
-
-          right: '10px',
-
-          border: 'none',
-
-          background:
-            'transparent',
-
-          color:
-            'white',
-
-          cursor:
-            'pointer',
-
-          fontSize:
-            '20px'
-        }}
-      >
-        🚪
-      </button>
-
       {/* TITULO */}
-
       <div
         style={{
-          color: 'white',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
 
-          textAlign: 'center',
-
-          fontSize: '20px',
-
-          fontWeight: 'bold',
-
-          marginBottom: '6px'
+          marginBottom: '12px'
         }}
       >
-        Anapurnis
-      </div>
 
-      {/* USUARIO */}
+        <div
+          style={{
+            width: '60px'
+          }}
+        />
 
-      <div
-        style={{
-          textAlign:
-            'center',
+        <div
+          style={{
+            color: 'white',
+            fontSize: '20px',
+            fontWeight: 'bold'
+          }}
+        >
+          Anapurnis
+        </div>
 
-          marginBottom:
-            '12px',
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px'
+          }}
+        >
 
-          fontSize:
-            '30px'
-        }}
-      >
-        {
-          usuario === 'Ana'
-            ? '👩🏻'
-            : '🧔🏻‍♂️'
-        }
+          <span
+            style={{
+              fontSize: '24px'
+            }}
+          >
+            {
+              usuario === 'Ana'
+                ? '👩🏻'
+                : '🧔🏻‍♂️'
+            }
+          </span>
+
+          <button
+            onClick={cerrarSesion}
+            style={{
+              border: 'none',
+              background: 'transparent',
+              cursor: 'pointer',
+              color: 'white',
+              fontSize: '18px'
+            }}
+          >
+            🚪
+          </button>
+
+        </div>
+
       </div>
 
       {/* MENU */}
