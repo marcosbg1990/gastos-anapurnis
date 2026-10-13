@@ -13,9 +13,13 @@ export default function IntroducirGasto() {
       .toISOString()
       .split('T')[0]
 
+  const [esIngreso, setEsIngreso] =
+    useState(false)
+
   const [fecha, setFecha] =
     useState(hoy)
 
+    
   const [importe, setImporte] =
     useState('')
 
@@ -39,9 +43,18 @@ export default function IntroducirGasto() {
         .insert([
           {
             Fecha: fecha,
-            Importe: Number(
-              importe.replace(',', '.')
-            ),
+            Importe:
+              esIngreso
+                ? Math.abs(
+                    Number(
+                      importe.replace(',', '.')
+                    )
+                  )
+                : -Math.abs(
+                    Number(
+                      importe.replace(',', '.')
+                    )
+                  ),
             Categoria: categoria,
             Subcategoria: subcategoria,
             Descripcion: descripcion,
@@ -103,6 +116,14 @@ export default function IntroducirGasto() {
           }}
         >
 
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: '2fr 1fr',
+            gap: '10px'
+          }}
+        >
+
           <input
             type="date"
             value={fecha}
@@ -113,6 +134,39 @@ export default function IntroducirGasto() {
             }
             style={inputStyle}
           />
+
+          <button
+            type="button"
+            onClick={() =>
+              setEsIngreso(
+                !esIngreso
+              )
+            }
+            style={{
+              border: 'none',
+
+              borderRadius: '12px',
+
+              fontWeight: 'bold',
+
+              cursor: 'pointer',
+
+              backgroundColor:
+                esIngreso
+                  ? '#16a34a'
+                  : '#dc2626',
+
+              color: 'white'
+            }}
+          >
+            {
+              esIngreso
+                ? '💰'
+                : '💸'
+            }
+          </button>
+
+        </div>
 
           <input
             type="number"
