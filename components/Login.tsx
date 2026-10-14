@@ -81,6 +81,10 @@ export default function Login({
           <option>
             Marcos
           </option>
+
+          <option>
+            Administrador
+          </option>
         </select>
 
         <input
@@ -105,7 +109,42 @@ export default function Login({
         >
           Entrar
         </button>
+        {
+          usuario ===
+            'Administrador' && (
 
+          <button
+
+            onClick={() => {
+
+              localStorage.setItem(
+                'usuario',
+                'Administrador'
+              )
+
+              window.location.href =
+                '/admin'
+
+            }}
+
+            style={{
+              ...botonStyle,
+
+              marginTop:
+                '10px',
+
+              background:
+                '#475569'
+            }}
+
+          >
+
+            ⚙️ ACCESO ADMIN
+
+          </button>
+
+          )
+        }
       </div>
 
     </div>
