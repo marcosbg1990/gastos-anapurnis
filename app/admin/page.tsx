@@ -8,7 +8,7 @@ import AdminExportar from './AdminExportar'
 import AdminCategorias from './AdminCategorias'
 import AdminEstadisticas from './AdminEstadisticas'
 import AdminBaseDatos from './AdminBaseDatos'
-import AdminCarpetas from './AdminCarpetas'
+import AdminCarpetas from './Carpetas/AdminCarpetas'
 
 export default function AdminPage() {
 
