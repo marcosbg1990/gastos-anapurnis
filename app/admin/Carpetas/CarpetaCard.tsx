@@ -120,7 +120,9 @@ export default function CarpetaCard({
       Number(carpeta.mes),
       1
     )
-
+  const cashTanque =
+    Number(carpeta.cash) +
+    Number(presupuestoSiguiente || 0)
   const textoIngreso =
     `Presupuesto ${
       nombresMeses[
@@ -385,10 +387,10 @@ export default function CarpetaCard({
               }}
             >
 
-              <CarpetaTanque
-                categoria={carpeta.categoria}
-                cash={Number(carpeta.cash)}
 
+            <CarpetaTanque
+                categoria={carpeta.categoria}
+                cash={cashTanque}
                 maximo={
                   obtenerMaximo(
                     carpeta.categoria

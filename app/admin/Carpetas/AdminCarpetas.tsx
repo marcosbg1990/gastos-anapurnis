@@ -91,6 +91,10 @@ export default function AdminCarpetas() {
   const [saldoBanco,
     setSaldoBanco] =
       useState(0)
+  const [
+    ingresosMesSiguiente,
+    setIngresosMesSiguiente
+  ] = useState(0)
 
   useEffect(() => {
 
@@ -194,132 +198,6 @@ export default function AdminCarpetas() {
             'id',
             carpeta.id
           )
-        const siguiente =
-          obtenerSiguienteMes(
-            anio,
-            mes
-          )
-
-        const carpetaSiguiente =
-          historicoCarpetas.find(
-            c =>
-              c.categoria === carpeta.categoria &&
-              c.anio === siguiente.anio &&
-              c.mes === siguiente.mes
-          )
-
-      if (error) {
-        console.error(error)
-      }
-
-      const { data: gastosSiguiente } =
-        await supabase
-          .from('gastos')
-          .select('*')
-      const outMesSiguiente =
-        (gastosSiguiente || [])
-
-          .filter((g: any) => {
-
-            const fecha =
-              new Date(g.Fecha)
-
-            return (
-
-              g.Categoria ===
-                carpeta.categoria
-
-              &&
-
-              fecha.getFullYear() ===
-                siguiente.anio
-
-              &&
-
-              fecha.getMonth() + 1 ===
-                siguiente.mes
-
-            )
-
-          })
-
-          .reduce(
-            (acc, g) =>
-              acc +
-              Number(g.Importe),
-            0
-          )
-      if (carpetaSiguiente) {
-
-        const cashMesSiguiente =
-
-          cashNuevo
-
-          +
-
-          Number(
-            carpetaSiguiente.in_amount || 0
-          )
-
-          +
-
-          outMesSiguiente
-
-        await supabase
-
-          .from('carpetas')
-
-          .update({
-
-            out_amount:
-              outMesSiguiente,
-
-            cash:
-              cashMesSiguiente
-
-          })
-
-          .eq(
-            'id',
-            carpetaSiguiente.id
-          )
-
-      } else {
-
-        const cashMesSiguiente =
-
-          cashNuevo
-
-          +
-
-          outMesSiguiente
-
-        await supabase
-
-          .from('carpetas')
-
-          .insert({
-
-            anio:
-              siguiente.anio,
-
-            mes:
-              siguiente.mes,
-
-            categoria:
-              carpeta.categoria,
-
-            in_amount: 0,
-
-            out_amount:
-              outMesSiguiente,
-
-            cash:
-              cashMesSiguiente
-
-          })
-
-      }
 
     }
 
@@ -445,10 +323,20 @@ export default function AdminCarpetas() {
 
   async function cargarGastos() {
 
-    const { data, error } =
-      await supabase
-        .from('gastos')
-        .select('*')
+const respuesta =
+    await supabase
+      .from('gastos')
+      .select('*', { count: 'exact' })
+      .order('id', {
+        ascending: false
+      })
+      .range(0, 999)
+
+      const {
+        data,
+        error,
+        count
+      } = respuesta
 
     if (error) {
 
@@ -461,23 +349,44 @@ export default function AdminCarpetas() {
     const gastosMes =
       (data || []).filter((g: any) => {
 
-        const fecha =
-          new Date(g.Fecha)
+        const [y, m] =
+          g.Fecha.split('-')
 
         return (
-          fecha.getFullYear() === anio &&
-          fecha.getMonth() + 1 === mes
+          Number(y) === anio &&
+          Number(m) === mes
         )
 
       })
 
-    console.log(
-      'Gastos del mes',
-      gastosMes.length
-    )
-
     setGastos(gastosMes)
+    const siguiente =
+      obtenerSiguienteMes(
+        anio,
+        mes
+      )
 
+    const ingresosSiguiente =
+      (data || [])
+        .filter((g: any) => {
+          const [y, m] =
+            g.Fecha.split('-')
+
+          return (
+            g.Categoria === 'INGRESO' &&
+            Number(y) === siguiente.anio &&
+            Number(m) === siguiente.mes
+          )
+        })
+        .reduce(
+          (acc, g) =>
+            acc + Number(g.Importe),
+          0
+        )
+
+    setIngresosMesSiguiente(
+      ingresosSiguiente
+    )
   }
   async function guardarPresupuestoMesSiguiente(
     categoria: string,
@@ -499,26 +408,20 @@ export default function AdminCarpetas() {
       error: errorBusqueda
     } =
       await supabase
-
         .from('carpetas')
-
         .select('*')
-
         .eq(
           'anio',
           siguienteAnio
         )
-
         .eq(
           'mes',
           siguienteMes
         )
-
         .eq(
           'categoria',
           categoria
         )
-
         .maybeSingle()
 
     if (errorBusqueda) {
@@ -823,7 +726,10 @@ export default function AdminCarpetas() {
         Number(c.in_amount || 0),
       0
     )
-
+  const pendienteCarpetasMesSiguiente =
+    ingresosMesSiguiente -
+    ingresosCarpetasMesSiguiente
+    
   const nombreMesSiguiente =
     meses.find(
       m => m.id === siguiente.mes
@@ -1246,7 +1152,7 @@ export default function AdminCarpetas() {
               </span>
 
               <b>
-                {ingresosCarpetasMesSiguiente
+                {ingresosMesSiguiente
                   .toLocaleString(
                     'es-ES',
                     {
@@ -1265,13 +1171,12 @@ export default function AdminCarpetas() {
             >
 
               <span>
-                Dif. Saldo:
+                Pte. Carpetas:
               </span>
 
               <b>
                 {(
-                  saldoBanco -
-                  saldoCarpetasMesSiguiente
+                  pendienteCarpetasMesSiguiente
                 ).toLocaleString(
                   'es-ES',
                   {
