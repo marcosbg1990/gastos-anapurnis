@@ -74,6 +74,11 @@ export default function DashboardAnual() {
     setCategoriaSeleccionada
   ] = useState('COMIDA')
 
+  const [
+    subcategoriaSeleccionada,
+    setSubcategoriaSeleccionada
+  ] = useState('')
+
   const meses = [
     'Enero',
     'Febrero',
@@ -261,7 +266,100 @@ export default function DashboardAnual() {
         acc + item.total,
       0
     )
+    function obtenerEvolucionSubcategoria() {
 
+      if (
+        !subcategoriaSeleccionada
+      ) {
+        return []
+      }
+
+      const resultado = []
+
+      for (
+        let i = 1;
+        i <= 12;
+        i++
+      ) {
+
+        const totalMes =
+          gastos
+            .filter(g => {
+
+              const fecha =
+                new Date(
+                  g.Fecha
+                )
+
+              return (
+
+                fecha.getFullYear()
+                  === anio
+
+                &&
+
+                fecha.getMonth() + 1
+                  === i
+
+                &&
+
+                g.Categoria
+                  ===
+                categoriaSeleccionada
+
+                &&
+
+                g.Subcategoria
+                  ===
+                subcategoriaSeleccionada
+
+              )
+
+            })
+            .reduce(
+
+              (
+                acc,
+                g
+              ) =>
+
+                acc +
+                Math.abs(
+                  Number(
+                    g.Importe
+                  )
+                ),
+
+              0
+
+            )
+
+        resultado.push({
+
+          mes: [
+            'ENE',
+            'FEB',
+            'MAR',
+            'ABR',
+            'MAY',
+            'JUN',
+            'JUL',
+            'AGO',
+            'SEP',
+            'OCT',
+            'NOV',
+            'DIC'
+          ][i - 1],
+
+          gasto: totalMes
+
+        })
+
+      }
+
+      return resultado
+
+    }
   return (
 
     <div>
@@ -376,11 +474,17 @@ export default function DashboardAnual() {
                 key={
                   carpeta.id
                 }
-                onClick={() =>
+                onClick={() => {
+
                   setCategoriaSeleccionada(
                     carpeta.categoria
                   )
-                }
+
+                  setSubcategoriaSeleccionada(
+                    ''
+                  )
+
+                }}
                 style={{
                   background:
                     categoriaSeleccionada ===
@@ -646,21 +750,35 @@ export default function DashboardAnual() {
 
                 return (
 
-                  <div
-                    key={
-                      sub.nombre
-                    }
-                    style={{
-                      background:
-                        'white',
-                      borderRadius:
-                        15,
-                      padding:
-                        15,
-                      marginBottom:
-                        10
-                    }}
-                  >
+                 <div
+                key={
+                  sub.nombre
+                }
+                onClick={() =>
+                  setSubcategoriaSeleccionada(
+                    sub.nombre
+                  )
+                }
+                style={{
+                  background:
+                    subcategoriaSeleccionada ===
+                    sub.nombre
+                      ? '#dbeafe'
+                      : 'white',
+
+                  borderRadius:
+                    15,
+
+                  padding:
+                    15,
+
+                  marginBottom:
+                    10,
+
+                  cursor:
+                    'pointer'
+                }}
+              >
 
                     <div
                       style={{
@@ -737,7 +855,81 @@ export default function DashboardAnual() {
             )}
 
           </div>
+        {subcategoriaSeleccionada && (
 
+        <div
+          style={{
+            background: 'white',
+            borderRadius: 20,
+            padding: 20,
+            marginTop: 20
+          }}
+        >
+
+          <h3>
+
+            Evolución de
+
+            {' '}
+
+            {subcategoriaSeleccionada}
+
+          </h3>
+
+          <ResponsiveContainer
+            width="100%"
+            height={300}
+          >
+
+            <LineChart
+              data={
+                obtenerEvolucionSubcategoria()
+              }
+            >
+
+              <CartesianGrid
+                strokeDasharray="3 3"
+              />
+
+              <XAxis
+                dataKey="mes"
+              />
+
+              <YAxis
+                tickFormatter={
+                  v => `${v}€`
+                }
+              />
+
+              <Tooltip
+                formatter={
+                  (value: any) =>
+                    `${Number(value)
+                      .toLocaleString(
+                        'es-ES',
+                        {
+                          minimumFractionDigits: 2,
+                          maximumFractionDigits: 2
+                        }
+                      )} €`
+                }
+              />
+
+              <Line
+                type="monotone"
+                dataKey="gasto"
+                stroke="#2563eb"
+                strokeWidth={4}
+                dot={{ r: 4 }}
+              />
+
+            </LineChart>
+
+          </ResponsiveContainer>
+
+        </div>
+
+      )}
         </>
 
       )}
